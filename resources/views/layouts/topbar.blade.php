@@ -1,4 +1,4 @@
-<header class="bg-white dark:bg-gray-800 shadow h-16 flex items-center justify-between px-6 fixed top-0 right-0 left-0 md:left-64 z-10">
+<header class="bg-white dark:bg-gray-800 shadow h-16 flex items-center justify-between px-6 fixed top-0 right-0 left-0 md:left-64 z-30">
     <div class="flex items-center">
         <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none md:hidden">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,12 +15,21 @@
         </div>
     </div>
     <div class="flex items-center space-x-4">
-        <button x-data x-on:click="$dispatch('open-modal', 'create-project')" class="hidden sm:flex items-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            New Project
-        </button>
+        @if(request()->routeIs('projects.*'))
+            <button x-data x-on:click="$dispatch('open-modal', 'create-project')" class="flex items-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="w-4 h-4 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="hidden sm:inline">New Project</span>
+            </button>
+        @elseif(request()->routeIs('employees.*'))
+            <button x-data x-on:click="$dispatch('open-modal', 'create-employee')" class="flex items-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="w-4 h-4 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="hidden sm:inline">Add Employee</span>
+            </button>
+        @endif
 
         <button @click="toggleDarkMode()" class="text-gray-500 focus:outline-none p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
             <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

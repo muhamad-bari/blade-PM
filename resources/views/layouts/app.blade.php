@@ -31,7 +31,7 @@
     <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col"
           x-data="{ sidebarOpen: false }">
         
-        <div class="flex flex-1 h-full">
+        <div class="flex flex-1 min-h-screen">
             @include('layouts.sidebar')
 
             <div class="flex-1 flex flex-col md:pl-64 min-h-screen transition-all duration-300">

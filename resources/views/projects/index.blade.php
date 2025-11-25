@@ -11,37 +11,60 @@
 
     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
         <div class="overflow-x-auto w-full">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Project</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Leader</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Priority</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Deadline</th>
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Leader</th>
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Priority</th>
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Deadline</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($projects as $project)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $project->title }}</div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">{{ $project->description }}</div>
+                                
+                                {{-- Mobile Stacked Info --}}
+                                <div class="md:hidden mt-2 space-y-1">
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="w-16 font-medium">Leader:</span>
+                                        <div class="flex items-center">
+                                            <x-avatar :src="$project->leader->avatar_url" :alt="$project->leader->name" size="xs" class="w-4 h-4 mr-1" />
+                                            <span>{{ $project->leader->name }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="w-16 font-medium">Status:</span>
+                                        <x-badge :type="$project->status" class="text-[10px] px-1.5 py-0.5">{{ ucfirst(str_replace('_', ' ', $project->status)) }}</x-badge>
+                                    </div>
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="w-16 font-medium">Priority:</span>
+                                        <x-badge :type="$project->priority" class="text-[10px] px-1.5 py-0.5">{{ ucfirst($project->priority) }}</x-badge>
+                                    </div>
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="w-16 font-medium">Due:</span>
+                                        <span>{{ $project->deadline->format('M d, Y') }}</span>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <x-avatar :src="$project->leader->avatar_url" :alt="$project->leader->name" size="xs" />
                                     <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">{{ $project->leader->name }}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                                 <x-badge :type="$project->status">{{ ucfirst(str_replace('_', ' ', $project->status)) }}</x-badge>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                                 <x-badge :type="$project->priority">{{ ucfirst($project->priority) }}</x-badge>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 {{ $project->deadline->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -72,7 +95,7 @@
     </div>
 
     {{-- Create Modal --}}
-    <x-modal name="create-project" focusable>
+    <x-modal name="create-project" focusable maxWidth="xl">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Create New Project</h2>
             
@@ -89,7 +112,7 @@
 
             <form action="{{ route('projects.store') }}" method="POST">
                 @csrf
-                <div class="space-y-4">
+                <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                         <input type="text" name="title" value="{{ old('title') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
@@ -158,7 +181,7 @@
     {{-- Loop for View/Edit Modals --}}
     @foreach($projects as $project)
         {{-- View Modal --}}
-        <x-modal name="view-project-{{ $project->id }}" focusable>
+        <x-modal name="view-project-{{ $project->id }}" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $project->title }}</h2>
@@ -169,7 +192,7 @@
                     </button>
                 </div>
                 
-                <div class="space-y-4">
+                <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
                     <div>
                         <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</h4>
                         <p class="mt-1 text-sm text-gray-900 dark:text-gray-200">{{ $project->description }}</p>
@@ -218,14 +241,14 @@
         </x-modal>
 
         {{-- Edit Modal --}}
-        <x-modal name="edit-project-{{ $project->id }}" focusable>
+        <x-modal name="edit-project-{{ $project->id }}" focusable maxWidth="xl">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Edit Project</h2>
                 <form action="{{ route('projects.update', $project) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
-                    <div class="space-y-4">
+                    <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                             <input type="text" name="title" value="{{ $project->title }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>

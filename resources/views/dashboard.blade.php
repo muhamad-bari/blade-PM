@@ -46,9 +46,9 @@
                     </svg>
                 </button>
             </div>
-            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="p-6 pt-4 flex-grow">
-                <div class="min-h-[500px] relative">
-                    <div id="calendar" class="absolute inset-0"></div>
+            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="p-6 pt-4 flex-grow overflow-hidden">
+                <div class="w-full">
+                    <div id="calendar" class="w-full"></div>
                 </div>
             </div>
         </div>
@@ -307,15 +307,24 @@
             // FullCalendar
             const calendarEl = document.getElementById('calendar');
             const calendar = new Calendar(calendarEl, {
-                plugins: [ dayGridPlugin, interactionPlugin ],
-                initialView: 'dayGridMonth',
+                plugins: [ dayGridPlugin, interactionPlugin, listPlugin ],
+                initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
                 events: @json($calendarEvents),
                 headerToolbar: {
-                    left: 'prev,next today',
+                    left: 'prev,next',
                     center: 'title',
-                    right: 'dayGridMonth,dayGridWeek'
+                    right: 'dayGridMonth,listWeek'
                 },
-                height: '100%',
+                height: 'auto',
+                contentHeight: 'auto',
+                handleWindowResize: true,
+                windowResize: function(view) {
+                    if (window.innerWidth < 768) {
+                        calendar.changeView('listWeek');
+                    } else {
+                        calendar.changeView('dayGridMonth');
+                    }
+                },
                 eventClick: function(info) {
                     if (info.event.url) {
                         window.location.href = info.event.url;
