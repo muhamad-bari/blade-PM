@@ -42,6 +42,23 @@
         table.dataTable {
             width: 100% !important;
         }
+        
+        /* Sticky Header */
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Remove Footer Whitespace */
+        .dataTables_wrapper {
+            padding-bottom: 0px !important;
+            margin-bottom: 0px !important;
+        }
+        .dataTables_wrapper .dataTables_info, 
+        .dataTables_wrapper .dataTables_paginate { 
+            display: none !important; 
+        }
 
         /* MOBILE CARD VIEW FOR DATATABLES */
         @media (max-width: 768px) {
@@ -177,9 +194,9 @@
             var table = $('#projectsTable').DataTable({
                 responsive: true,
                 paging: false, // Disable paging for infinite scroll feel
-                scrollY: 'calc(100vh - 250px)', // Adjust based on header/footer height
+                scrollY: 'calc(100vh - 200px)', // Adjust based on header/footer height
                 scrollCollapse: true,
-                dom: 'lrtip', // Hide default search box
+                dom: 't', // Only render the table, no other elements
                 ordering: true,
                 info: false,
                 language: {
