@@ -10,45 +10,62 @@
     @endif
 
     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-        <div class="overflow-x-auto w-full">
+        <div class="w-full">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto">
-                <thead class="bg-gray-50 dark:bg-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700 hidden md:table-header-group">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Project</th>
                         <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Leader</th>
                         <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                         <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Priority</th>
                         <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Deadline</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 block md:table-row-group">
                     @foreach($projects as $project)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <td class="px-6 py-4">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors block md:table-row border-b border-gray-200 dark:border-gray-700 md:border-none mb-4 md:mb-0 shadow-sm md:shadow-none rounded-lg md:rounded-none mx-4 md:mx-0 mt-4 md:mt-0 overflow-hidden">
+                            <td class="px-6 py-4 block md:table-cell w-full md:w-auto">
                                 <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $project->title }}</div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">{{ $project->description }}</div>
                                 
                                 {{-- Mobile Stacked Info --}}
-                                <div class="md:hidden mt-2 space-y-1">
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span class="w-16 font-medium">Leader:</span>
+                                <div class="md:hidden mt-4 space-y-2">
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 pb-2">
+                                        <span class="font-medium">Leader</span>
                                         <div class="flex items-center">
                                             <x-avatar :src="$project->leader->avatar_url" :alt="$project->leader->name" size="xs" class="w-4 h-4 mr-1" />
                                             <span>{{ $project->leader->name }}</span>
                                         </div>
                                     </div>
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span class="w-16 font-medium">Status:</span>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 pb-2">
+                                        <span class="font-medium">Status</span>
                                         <x-badge :type="$project->status" class="text-[10px] px-1.5 py-0.5">{{ ucfirst(str_replace('_', ' ', $project->status)) }}</x-badge>
                                     </div>
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span class="w-16 font-medium">Priority:</span>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 pb-2">
+                                        <span class="font-medium">Priority</span>
                                         <x-badge :type="$project->priority" class="text-[10px] px-1.5 py-0.5">{{ ucfirst($project->priority) }}</x-badge>
                                     </div>
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span class="w-16 font-medium">Due:</span>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pb-2">
+                                        <span class="font-medium">Due Date</span>
                                         <span>{{ $project->deadline->format('M d, Y') }}</span>
+                                    </div>
+                                    
+                                    {{-- Mobile Actions --}}
+                                    <div class="flex justify-end space-x-2 pt-2 border-t border-gray-100 dark:border-gray-700" x-data>
+                                        <button x-on:click="$dispatch('open-modal', 'view-project-{{ $project->id }}')" class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            View
+                                        </button>
+                                        <button x-on:click="$dispatch('open-modal', 'edit-project-{{ $project->id }}')" class="px-3 py-1.5 bg-indigo-600 text-white border border-transparent rounded text-xs font-medium hover:bg-indigo-700 transition-colors">
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('projects.destroy', $project) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-3 py-1.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded text-xs font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                                                Delete
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>
@@ -67,7 +84,7 @@
                             <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 {{ $project->deadline->format('M d, Y') }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium hidden md:table-cell">
                                 <div class="flex justify-end space-x-2" x-data>
                                     <button x-on:click="$dispatch('open-modal', 'view-project-{{ $project->id }}')" class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                         View
@@ -112,7 +129,7 @@
 
             <form action="{{ route('projects.store') }}" method="POST">
                 @csrf
-                <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
+                <div class="max-h-[90vh] overflow-y-auto space-y-4 pr-2">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                         <input type="text" name="title" value="{{ old('title') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
@@ -192,7 +209,7 @@
                     </button>
                 </div>
                 
-                <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
+                <div class="max-h-[90vh] overflow-y-auto space-y-4 pr-2">
                     <div>
                         <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</h4>
                         <p class="mt-1 text-sm text-gray-900 dark:text-gray-200">{{ $project->description }}</p>
@@ -248,7 +265,7 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="max-h-[80vh] overflow-y-auto space-y-4 pr-2">
+                    <div class="max-h-[90vh] overflow-y-auto space-y-4 pr-2">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                             <input type="text" name="title" value="{{ $project->title }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
