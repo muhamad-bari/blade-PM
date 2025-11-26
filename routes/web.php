@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('projects', ProjectController::class);
+    Route::patch('/projects/{project}/unpin', [ProjectController::class, 'unpin'])->name('projects.unpin');
     Route::resource('employees', EmployeeController::class);
 });
 

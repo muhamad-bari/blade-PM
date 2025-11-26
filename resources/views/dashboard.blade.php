@@ -168,12 +168,30 @@
                                     Due: {{ $project->deadline->format('M d') }}
                                 </div>
                                 <div class="flex space-x-2" x-data>
-                                    <button x-on:click="$dispatch('open-modal', 'view-project-{{ $project->id }}')" class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                        View
+                                    {{-- Tombol View --}}
+                                    <button x-on:click="$dispatch('open-modal', 'view-project-{{ $project->id }}')" 
+                                        class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" 
+                                        title="View Details">
+                                        <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button x-on:click="$dispatch('open-modal', 'edit-project-{{ $project->id }}')" class="px-3 py-1 bg-indigo-600 text-white border border-transparent rounded text-xs font-medium hover:bg-indigo-700 transition-colors">
-                                        Edit
+
+                                    {{-- Tombol Edit --}}
+                                    <button x-on:click="$dispatch('open-modal', 'edit-project-{{ $project->id }}')" 
+                                        class="px-3 py-1 bg-indigo-600 text-white border border-transparent rounded text-xs font-medium hover:bg-indigo-700 transition-colors" 
+                                        title="Edit Project">
+                                        <i class="fa-solid fa-pen"></i>
                                     </button>
+
+                                    {{-- Tombol Unpin --}}
+                                    <form action="{{ route('projects.unpin', $project) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" 
+                                            class="px-3 py-1 bg-yellow-500 text-white border border-transparent rounded text-xs font-medium hover:bg-yellow-600 transition-colors" 
+                                            title="Unpin Project">
+                                            <i class="fa-solid fa-thumbtack"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

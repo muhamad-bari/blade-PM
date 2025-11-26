@@ -88,4 +88,13 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
+
+    /**
+     * Unpin the specified project.
+     */
+    public function unpin(Project $project)
+    {
+        $project->update(['is_pinned' => false]);
+        return redirect()->route('dashboard')->with('success', 'Project unpinned successfully.');
+    }
 }
