@@ -26,17 +26,29 @@ class DashboardController extends Controller
         ];
 
         // Calendar Data
+        // Calendar Data
         $calendarEvents = Project::all()->map(function ($project) {
+            // Determine color based on status and priority
+            $color = '#3b82f6'; // Default Blue (In Progress)
+            
+            if ($project->priority === 'high') {
+                $color = '#ef4444'; // Red (Urgent)
+            } elseif ($project->status === 'completed') {
+                $color = '#22c55e'; // Green
+            } elseif ($project->status === 'pending') {
+                $color = '#eab308'; // Yellow
+            } elseif ($project->status === 'in_progress') {
+                $color = '#3b82f6'; // Blue
+            }
+
             return [
                 'title' => $project->title,
-                'start' => $project->deadline->format('Y-m-d'),
+                'start' => $project->created_at->format('Y-m-d'),
+                'end' => $project->deadline->addDay()->format('Y-m-d'), // Exclusive end date for range
                 'url' => route('projects.show', $project),
-                'color' => match($project->priority) {
-                    'high' => '#ef4444', // red-500
-                    'medium' => '#eab308', // yellow-500
-                    'low' => '#22c55e', // green-500
-                    default => '#3b82f6',
-                }
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'allDay' => true,
             ];
         });
         

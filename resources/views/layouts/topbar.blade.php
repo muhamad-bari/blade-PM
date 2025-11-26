@@ -5,14 +5,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
-        <div class="relative mx-4 lg:mx-0 hidden md:block">
+        @if(request()->routeIs('projects.index') || request()->routeIs('employees.index'))
+        <div class="relative mx-4 lg:mx-0">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </span>
-            <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 focus:border-indigo-600" type="text" placeholder="Search...">
+            <input id="globalSearch" class="form-input w-full sm:w-64 rounded-md pl-10 pr-4 focus:border-indigo-600 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600" type="text" placeholder="Search...">
         </div>
+        @endif
     </div>
     <div class="flex items-center space-x-4">
         @if(request()->routeIs('projects.*'))

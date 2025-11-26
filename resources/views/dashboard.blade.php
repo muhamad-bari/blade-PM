@@ -1,4 +1,85 @@
 <x-app-layout>
+    {{-- FullCalendar CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <style>
+        /* 1. FORCE FULL WIDTH (SOLUSI KURUS) */
+        .fc, 
+        .fc-view-harness, 
+        .fc-daygrid-body, 
+        .fc-scrollgrid-sync-table, 
+        .fc-col-header-table, 
+        .fc-daygrid-body table {
+            width: 100% !important;
+        }
+
+        /* 2. DARK MODE POPOVER (SOLUSI BLANK) */
+        .dark .fc-popover {
+            background-color: #1f2937 !important; /* gray-800 */
+            border-color: #374151 !important; /* gray-700 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+        .dark .fc-popover-header {
+            background-color: #374151 !important; /* gray-700 */
+            color: #f3f4f6 !important; /* gray-100 */
+        }
+        .dark .fc-popover-body {
+            color: #f3f4f6 !important; /* gray-100 */
+        }
+        .dark .fc-popover-close {
+            color: #9ca3af !important; /* gray-400 */
+        }
+        .dark .fc-popover-close:hover {
+            color: #f3f4f6 !important; /* gray-100 */
+        }
+
+        /* Dark Mode List View & General Fixes */
+        .dark .fc-theme-standard td, 
+        .dark .fc-theme-standard th {
+            border-color: #374151 !important; /* gray-700 */
+        }
+        .dark .fc-col-header-cell-cushion,
+        .dark .fc-daygrid-day-number {
+            color: #e5e7eb !important; /* gray-200 */
+            text-decoration: none !important;
+        }
+        .dark .fc-list-day-cushion {
+            background-color: #374151 !important; /* gray-700 */
+            color: #e5e7eb !important; /* gray-200 */
+        }
+        .dark .fc-list-event:hover td {
+            background-color: #4b5563 !important; /* gray-600 */
+        }
+        .dark .fc-list-event td {
+            color: #e5e7eb !important; /* gray-200 */
+            border-color: #374151 !important; /* gray-700 */
+        }
+        .dark .fc-theme-standard .fc-list {
+            border-color: #374151 !important; /* gray-700 */
+        }
+
+        /* 3. MOBILE TOOLBAR & RESPONSIVENESS */
+        @media (max-width: 640px) {
+            .fc-header-toolbar {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                align-items: center !important;
+            }
+            .fc-toolbar-chunk {
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+            }
+            .fc-toolbar-title {
+                font-size: 1.25rem !important;
+            }
+            .fc-button-group {
+                display: flex !important;
+            }
+            .fc table {
+                font-size: 0.75rem !important;
+            }
+        }
+    </style>
     {{-- Header & Actions --}}
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Dashboard</h2>
@@ -46,8 +127,16 @@
                     </svg>
                 </button>
             </div>
-            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="p-6 pt-4 flex-grow overflow-hidden">
-                <div class="w-full">
+            <div x-show="open" 
+                 x-transition:enter="transition ease-out duration-200" 
+                 x-transition:enter-start="opacity-0 transform scale-95" 
+                 x-transition:enter-end="opacity-100 transform scale-100" 
+                 x-transition:leave="transition ease-in duration-100" 
+                 x-transition:leave-start="opacity-100 transform scale-100" 
+                 x-transition:leave-end="opacity-0 transform scale-95" 
+                 class="pt-4 flex-grow overflow-hidden">
+                {{-- Edge-to-edge container (px-0) with fixed height --}}
+                <div class="w-full h-[500px] overflow-y-auto px-0 sm:px-2 pb-2">
                     <div id="calendar" class="w-full"></div>
                 </div>
             </div>
@@ -271,7 +360,7 @@
             const ctx = document.getElementById('statusChart').getContext('2d');
             const statusCounts = @json($projectStatusCounts);
             
-            new Chart(ctx, {
+            const chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Pending', 'In Progress', 'Completed'],
@@ -304,20 +393,38 @@
                 }
             });
 
+            // Reactivity for Chart Legend (Dark Mode)
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        chart.options.plugins.legend.labels.color = isDark ? '#e5e7eb' : '#374151';
+                        chart.update();
+                    }
+                });
+            });
+
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+
             // FullCalendar
             const calendarEl = document.getElementById('calendar');
-            const calendar = new Calendar(calendarEl, {
-                plugins: [ dayGridPlugin, interactionPlugin, listPlugin ],
+            const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
-                events: @json($calendarEvents),
                 headerToolbar: {
-                    left: 'prev,next',
+                    left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,listWeek'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                height: 'auto',
-                contentHeight: 'auto',
-                handleWindowResize: true,
+                events: @json($calendarEvents),
+                height: '100%', // Fill the fixed height container
+                navLinks: true,
+                editable: false,
+                selectable: true,
+                nowIndicator: true,
+                dayMaxEvents: true,
                 windowResize: function(view) {
                     if (window.innerWidth < 768) {
                         calendar.changeView('listWeek');
