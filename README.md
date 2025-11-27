@@ -10,7 +10,7 @@ A streamlined project management application built with Laravel. This system is 
     -   Full access to create, edit, and delete projects and employees.
     -   Exclusive rights to export data.
 -   **Guest Read-Only Access**:
-    -   Guests can view dashboards, projects, and employee lists but cannot modify any data.
+    -   Guests can view dashboards, projects, and lists but cannot modify any data.
 -   **Project Management**:
     -   Create and track projects.
     -   Pin important projects to the dashboard.
@@ -68,18 +68,6 @@ A streamlined project management application built with Laravel. This system is 
     ```bash
     php artisan serve
     ```
-
-## Default Credentials
-
-The database seeder creates the following accounts for testing:
-
-### Admin (Full Access)
--   **Email**: `admin@example.com`
--   **Password**: `password8899`
-
-### Guest (Read-Only)
--   **Email**: `guest@user.com`
--   **Password**: `user123`
 
 ## License
 
