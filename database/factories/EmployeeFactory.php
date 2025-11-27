@@ -16,12 +16,12 @@ class EmployeeFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->name();
+        $name = $this->faker->name();
         return [
             'name' => $name,
-            'position' => fake()->jobTitle(),
-            'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->phoneNumber(),
+            'position' => $this->faker->jobTitle(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
             'avatar_url' => 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=random',
         ];
     }

@@ -23,6 +23,10 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
@@ -48,6 +52,10 @@ class EmployeeController extends Controller
 
     public function update(Request $request, Employee $employee)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
@@ -63,6 +71,10 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $employee->delete();
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
     }

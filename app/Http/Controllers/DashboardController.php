@@ -58,8 +58,27 @@ class DashboardController extends Controller
         // If the user wants to manage ALL projects from dashboard, we'd need a full list. 
         // Assuming "Pinned Projects carousel (or list)" implies we interact with those.
         // For "Create", it's global.
+        // Projects Lists for Modals
+        $listTotalProjects = Project::with('leader')->get();
+        $listDueProjects = Project::whereDate('deadline', today())->with('leader')->get();
+        $listOverdueProjects = Project::whereDate('deadline', '<', today())
+            ->where('status', '!=', 'completed')
+            ->with('leader')
+            ->get();
+
         $employees = Employee::all(); // For Create/Edit forms
 
-        return view('dashboard', compact('totalProjects', 'tasksDue', 'overdue', 'pinnedProjects', 'projectStatusCounts', 'calendarEvents', 'employees'));
+        return view('dashboard', compact(
+            'totalProjects', 
+            'tasksDue', 
+            'overdue', 
+            'pinnedProjects', 
+            'projectStatusCounts', 
+            'calendarEvents', 
+            'employees',
+            'listTotalProjects',
+            'listDueProjects',
+            'listOverdueProjects'
+        ));
     }
 }

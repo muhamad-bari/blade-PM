@@ -2,188 +2,211 @@
     {{-- DataTables CSS & jQuery --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-
+    
     <style>
-        /* DataTables Customization */
-        .dataTables_wrapper .dataTables_filter { display: none; } /* Hide default search */
-        .dataTables_wrapper .dataTables_length { display: none; } /* Hide page length */
-        .dataTables_wrapper .dataTables_paginate { display: none; } /* Hide default pagination */
-        .dataTables_wrapper .dataTables_info { display: none; } /* Hide info */
+        /* --- CSS SAMA SEPERTI PROJECTS --- */
         
-        /* Dark Mode DataTables Overrides */
-        .dark .dataTables_wrapper .dataTables_length,
-        .dark .dataTables_wrapper .dataTables_filter,
-        .dark .dataTables_wrapper .dataTables_info,
-        .dark .dataTables_wrapper .dataTables_processing,
-        .dark .dataTables_wrapper .dataTables_paginate {
-            color: #e5e7eb;
-        }
-        .dark table.dataTable tbody tr {
-            background-color: transparent;
-        }
-        .dark table.dataTable tbody tr:hover {
-            background-color: rgba(55, 65, 81, 0.5); /* gray-700/50 */
-        }
-        .dark table.dataTable thead th {
-            color: #d1d5db; /* gray-300 */
-            border-bottom-color: #4b5563; /* gray-600 */
-        }
-        .dark table.dataTable.no-footer {
-            border-bottom-color: #4b5563; /* gray-600 */
-        }
-        
-        /* Fixed Header Styling */
-        .dataTables_scrollHeadInner {
-            width: 100% !important;
-        }
-        table.dataTable {
-            width: 100% !important;
-        }
-        
-        /* Sticky Header */
-        thead {
-            position: sticky;
-            top: 0;
+        /* Ikon Lingkaran Biru */
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+        table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+            content: '+';
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: absolute;
+            left: 8px; 
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 10;
         }
 
-        /* Remove Footer Whitespace */
-        .dataTables_wrapper {
-            padding-bottom: 0px !important;
-            margin-bottom: 0px !important;
-        }
-        .dataTables_wrapper .dataTables_info, 
-        .dataTables_wrapper .dataTables_paginate { 
-            display: none !important; 
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control:before {
+            content: '-';
+            background-color: #6c757d;
         }
 
-        /* MOBILE CARD VIEW FOR DATATABLES */
-        @media (max-width: 768px) {
-            /* Hide the table header */
-            .dataTables_scrollHead {
-                display: none !important;
-            }
-            
-            /* Make rows look like cards */
-            table.dataTable tbody tr {
-                display: block;
-                background-color: #fff;
-                border: 1px solid #e5e7eb;
-                border-radius: 0.5rem;
-                margin-bottom: 1rem;
-                padding: 1rem;
-                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            }
-            
-            .dark table.dataTable tbody tr {
-                background-color: #1f2937; /* gray-800 */
-                border-color: #374151; /* gray-700 */
-            }
+        /* Padding kiri agar teks tidak nabrak ikon (+) saat mobile */
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+        table.dataTable.dtr-inline.collapsed > thead > tr > th.dtr-control {
+            padding-left: 45px !important;
+        }
 
-            /* Make cells display as block/flex */
-            table.dataTable tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.5rem 0;
-                border: none !important;
-                text-align: right;
-            }
+        .dtr-details .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start !important;
+            margin-top: 5px;
+        }
+
+        .dtr-details { width: 100%; }
+        .dtr-details li {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .dark .dtr-details li { border-bottom: 1px solid #374151; }
+        .dtr-title {
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        /* Hide Default DataTables Elements */
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { display: none; }
+        
+        /* Pagination Styling */
+        .dataTables_wrapper .dataTables_paginate {
+            padding-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.25rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border: 1px solid #e5e7eb !important;
+            background: #fff !important;
+            border-radius: 0.375rem !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #4f46e5 !important;
+            color: white !important;
+            border-color: #4f46e5 !important;
         }
     </style>
 
-    <div class="h-[calc(100vh-65px)] flex flex-col">
-        <div class="flex justify-between items-center mb-4 px-1">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Employees</h2>
-        </div>
-
+    <div class="w-full">
+        
         @if(session('success'))
             <div class="mb-4 px-4 py-3 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 rounded-md">
                 {{ session('success') }}
             </div>
         @endif
 
-        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg flex-grow overflow-hidden flex flex-col">
-            <div class="w-full h-full flex flex-col">
-                <table id="employeesTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto stripe hover" style="width:100%">
-                <thead class="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Position</th>
-                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Phone</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach($employees as $employee)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-200 dark:border-gray-700">
-                            <td class="px-6 py-4 w-full md:w-auto">
-                                <div class="flex items-center">
-                                    <x-avatar :src="$employee->avatar_url" :alt="$employee->name" size="sm" />
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $employee->name }}</div>
-                                        <div class="md:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $employee->position }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                <div class="flex items-center justify-between md:justify-start w-full">
-                                    <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400">Position:</span>
-                                    <span>{{ $employee->position }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                <div class="flex items-center justify-between md:justify-start w-full">
-                                    <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
-                                    <span>{{ $employee->email }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                <div class="flex items-center justify-between md:justify-start w-full">
-                                    <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400">Phone:</span>
-                                    <span>{{ $employee->phone }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end space-x-2 w-full pt-2 md:pt-0 border-t md:border-t-0 border-gray-100 dark:border-gray-700 mt-2 md:mt-0">
-                                    <a href="{{ route('employees.edit', $employee) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">Edit</a>
-                                    <form action="{{ route('employees.destroy', $employee) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
+        <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden">
+            
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-gray-800">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">
+                    Employees
+                </h3>
+                
+                @if(auth()->user()->role === 'admin')
+                <button x-data x-on:click="$dispatch('open-modal', 'create-employee')" class="w-full md:w-auto flex justify-center items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    <span>Add Employee</span>
+                </button>
+                @endif
+            </div>
+
+            <div class="p-4">
+                <table id="employeesTable" class="display nowrap w-full text-left border-collapse stripe hover" style="width:100%">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            {{-- PERBAIKAN 1: Tambahkan min-width agar kolom Nama punya ruang --}}
+                            <th class="px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="min-width: 200px;">Name</th>
+                            <th class="px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Position</th>
+                            <th class="px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                            <th class="px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Phone</th>
+                            @if(auth()->user()->role === 'admin')
+                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            @endif
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                        @foreach($employees as $employee)
+                            <tr>
+                                <td class="px-4 py-3 align-middle">
+                                    <div class="flex items-center gap-3">
+                                        <x-avatar :src="$employee->avatar_url" :alt="$employee->name" size="xs" />
+                                        <div class="font-bold text-gray-900 dark:text-gray-100">{{ $employee->name }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 align-middle text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $employee->position }}
+                                </td>
+                                <td class="px-4 py-3 align-middle text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $employee->email }}
+                                </td>
+                                <td class="px-4 py-3 align-middle text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $employee->phone }}
+                                </td>
+                                @if(auth()->user()->role === 'admin')
+                                <td class="px-4 py-3 align-middle text-right">
+                                    <div class="action-buttons flex justify-end gap-2">
+                                        <button type="button" class="btn-edit text-gray-400 hover:text-blue-600 transition-colors" 
+                                            onclick="window.location.href='{{ route('employees.edit', $employee) }}'">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        
+                                        <form action="{{ route('employees.destroy', $employee) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     <script>
         $(document).ready(function() {
             var table = $('#employeesTable').DataTable({
-                responsive: true,
-                paging: false, // Disable paging for infinite scroll feel
-                scrollY: 'calc(100vh - 200px)', // Adjust based on header/footer height
-                scrollCollapse: true,
-                dom: 't', // Only render the table, no other elements
+                // Aktifkan scroll horizontal untuk keamanan
+                scrollX: true,
+                autoWidth: false,
+                
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 0
+                    }
+                },
+                paging: true,
+                pageLength: 10,
+                lengthChange: false,
                 ordering: true,
-                info: false,
+                info: true,
+                dom: 'rtip',
                 language: {
-                    emptyTable: "No employees found"
-                }
+                    emptyTable: "No employees found",
+                    paginate: {
+                        previous: '<i class="fa-solid fa-chevron-left"></i>',
+                        next: '<i class="fa-solid fa-chevron-right"></i>'
+                    }
+                },
+                // Tambahkan columnDefs di sini jika diperlukan (seperti kode sebelumnya)
+                columnDefs: [
+                    { responsivePriority: 0, targets: 0 },
+                    { responsivePriority: 1, targets: -1 }
+                ]
             });
 
-            // Connect Global Search Input to DataTables
-            $('#globalSearch').on('keyup', function() {
-                table.search(this.value).draw();
+            // Re-adjust saat resize agar header sinkron
+            $(window).on('resize', function () {
+                table.columns.adjust();
             });
         });
     </script>

@@ -8,6 +8,8 @@ use App\Models\ActivityLog;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
+use App\Exports\ProjectExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
@@ -35,6 +37,10 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $project = Project::create($request->validated());
         
         if ($request->has('employee_ids')) {
@@ -71,6 +77,10 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $project->update($request->validated());
 
         if ($request->has('employee_ids')) {
@@ -85,6 +95,10 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
@@ -94,7 +108,33 @@ class ProjectController extends Controller
      */
     public function unpin(Project $project)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $project->update(['is_pinned' => false]);
         return redirect()->route('dashboard')->with('success', 'Project unpinned successfully.');
+    }
+
+    /**
+     * Export projects to Excel.
+     */
+    public function export(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'priority' => 'nullable|string|in:all,low,medium,high',
+        ]);
+
+        return Excel::download(new ProjectExport(
+            $request->start_date,
+            $request->end_date,
+            $request->priority
+        ), 'projects_' . now()->format('Y-m-d_H-i-s') . '.xlsx');
     }
 }

@@ -17,12 +17,12 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
-            'description' => fake()->paragraph(),
-            'is_pinned' => fake()->boolean(20),
-            'priority' => fake()->randomElement(['low', 'medium', 'high']),
-            'deadline' => fake()->dateTimeBetween('now', '+1 month'),
-            'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
+            'title' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'is_pinned' => $this->faker->boolean(20),
+            'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
+            'deadline' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed']),
             'leader_employee_id' => \App\Models\Employee::factory(),
         ];
     }
